@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: suitecrm
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MYSQL_HOST
+        value: YOUR_DB_HOST
+      - key: MYSQL_DATABASE
+        value: suitecrm
+      - key: MYSQL_USER
+        value: suiteuser
+      - key: MYSQL_PASSWORD
+        value: yourpassword
