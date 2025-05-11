@@ -1,32 +1,24 @@
 FROM php:7.4-apache
 
-# Install required packages
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
+    libpq-dev \
     git \
-    curl \
+    unzip \
     libzip-dev \
-    libicu-dev \
-    libxslt1-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl xml gd intl xsl
+    zip \
+    && docker-php-ext-install pgsql pdo_pgsql zip
 
-# Enable Apache rewrite module
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set working directory
+# Download SuiteCRM
 WORKDIR /var/www/html
+RUN curl -L https://suitecrm.com/files/162/SuiteCRM-8.4/707/SuiteCRM-8.4.3.zip -o suitecrm.zip \
+    && unzip suitecrm.zip && mv SuiteCRM-8.4.3/* . && rm -rf suitecrm.zip SuiteCRM-8.4.3
 
-# Copy app files
-COPY . /var/www/html
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
 
-# Set correct permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Expose port
-EXPOSE 80
+# Start Apache
+CMD ["apache2-foreground"]
