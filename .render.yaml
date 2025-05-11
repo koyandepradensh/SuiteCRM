@@ -3,13 +3,34 @@ services:
     name: suitecrm
     env: docker
     plan: free
+    branch: main
     dockerfilePath: ./Dockerfile
     envVars:
-      - key: MYSQL_HOST
-        value: YOUR_DB_HOST
-      - key: MYSQL_DATABASE
-        value: suitecrm
-      - key: MYSQL_USER
-        value: suiteuser
-      - key: MYSQL_PASSWORD
-        value: yourpassword
+      - key: DB_TYPE
+        value: postgres
+      - key: DB_HOST
+        fromDatabase:
+          name: suitecrm-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: suitecrm-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: suitecrm-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: suitecrm-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: suitecrm-db
+          property: password
+
+databases:
+  - name: suitecrm-db
+    plan: free
+    databaseName: suitecrm
+    user: suitecrmuser
